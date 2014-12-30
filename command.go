@@ -189,8 +189,7 @@ func (c *Command) UsageTemplate() string {
 	if c.HasParent() {
 		return c.parent.UsageTemplate()
 	} else {
-		return `{{ $cmd := . }}
-Usage: {{if .Runnable}}
+		return `{{ $cmd := . }}Usage: {{if .Runnable}}
   {{.UseLine}}{{if .HasFlags}} [flags]{{end}}{{end}}{{if .HasSubCommands}}
   {{ .CommandPath}} [command]{{end}}{{if gt .Aliases 0}}
 
@@ -199,8 +198,7 @@ Aliases:
 {{ if .HasSubCommands}}
 Available Commands: {{range .Commands}}{{if .Runnable}}
   {{rpad .Use .UsagePadding }} {{.Short}}{{end}}{{end}}
-{{end}}
-{{ if .HasFlags}} Available Flags:
+{{end}}{{ if .HasFlags}} Available Flags:
 {{.Flags.FlagUsages}}{{end}}{{if .HasParent}}{{if and (gt .Commands 0) (gt .Parent.Commands 1) }}
 Additional help topics: {{if gt .Commands 0 }}{{range .Commands}}{{if not .Runnable}} {{rpad .CommandPath .CommandPathPadding}} {{.Short}}{{end}}{{end}}{{end}}{{if gt .Parent.Commands 1 }}{{range .Parent.Commands}}{{if .Runnable}}{{if not (eq .Name $cmd.Name) }}{{end}}
   {{rpad .CommandPath .CommandPathPadding}} {{.Short}}{{end}}{{end}}{{end}}{{end}}
@@ -218,9 +216,11 @@ func (c *Command) HelpTemplate() string {
 	if c.HasParent() {
 		return c.parent.HelpTemplate()
 	} else {
-		return `{{.Long | trim}}
-{{if or .Runnable .HasSubCommands}}{{.UsageString}}{{end}}
-`
+		return `{{if .Short}}{{.Short | trim}}{{if .Long}}
+
+{{end}}{{end}}{{.Long | trim}}{{if or .Runnable .HasSubCommands}}
+
+{{.UsageString}}{{end}}`
 	}
 }
 
